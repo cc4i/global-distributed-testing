@@ -1,0 +1,16 @@
+apiVersion: net.gke.io/v1
+kind: ServiceExport
+metadata:
+  name: frontend
+
+---
+apiVersion: net.gke.io/v1
+kind: ServiceExport
+metadata:
+  name: frontend-europe-west1
+
+---
+apiVersion: net.gke.io/v1
+kind: ServiceExport
+metadata:
+  name: frontend-us-west1

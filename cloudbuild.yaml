@@ -1,0 +1,86 @@
+steps:
+  # Build image 
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build-image
+    args: 
+    - 'build' 
+    - '-t'
+    - 'us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}'
+    - '.'
+
+  # Push image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: push-image
+    waitFor:
+    - build-image
+    args: 
+    - 'push'
+    - 'us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}'
+
+
+
+  # Create release for master in Cloud Deploy
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: deploy-master
+    waitFor:
+    - push-image
+    entrypoint: gcloud
+    args:
+      [
+        "deploy", "releases", "create", "rel-${SHORT_SHA}",
+        "--delivery-pipeline", "${_MASTER_PIPELINE}",
+        "--region", "us-west1",
+        "--annotations", "commitId=${REVISION_ID}",
+        "--skaffold-file", "skaffold-master.yaml",
+        "--images", "locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}"
+      ]
+  # Deploy master into Cluster
+
+  # Waiting & retrieve external IP
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: retrieve-endpoint
+    waitFor:
+    - deploy-master
+    entrypoint: 'bash'
+    args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      cat manifests/master/kustomization.yaml
+      gcloud container clusters get-credentials ${_MASTER_CLUSTER} --region ${_MASTER_CLUSTER_REGION} --project ${PROJECT_ID}
+      external_ip=""; while [ -z $external_ip ]; do echo "Waiting for end point..."; external_ip=$(kubectl get svc locust-master -n locust --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}" || true); [ -z "$external_ip" ] && sleep 10; done; echo "End point ready-" && echo $external_ip; export endpoint=$external_ip
+      echo ${endpoint}
+      sed -i 's/MASTER_HOST/'${endpoint}'/g' manifests/worker/kustomization.yaml
+      cat manifests/worker/kustomization.yaml
+      cp manifests/worker/kustomization.yaml /workspace
+
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:372.0.0'
+    entrypoint: 'bash'
+    id: deploy-worker
+    waitFor:
+    - retrieve-endpoint
+    args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      cp /workspace/kustomization.yaml manifests/worker/kustomization.yaml
+      cat manifests/worker/kustomization.yaml
+      gcloud version
+      gcloud deploy releases create rel-${SHORT_SHA} \
+        --delivery-pipeline=${_WORKER_PIPELINE} \
+        --region=us-west1 \
+        --annotations="commitId=${REVISION_ID}" \
+        --skaffold-file=skaffold-worker.yaml \
+        --images="locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}"
+
+substitutions:
+    _MASTER_PIPELINE: gdt-app-master
+    _WORKER_PIPELINE: gdt-app-worker
+    _MASTER_CLUSTER: gke-auto-asia-northeast1
+    _MASTER_CLUSTER_REGION: asia-northeast1
+options:
+  dynamicSubstitutions: true
+  substitution_option: 'ALLOW_LOOSE'

@@ -1,0 +1,14 @@
+apiVersion: networking.gke.io/v1
+kind: MultiClusterService
+metadata:
+  name: frontend-mcs
+spec:
+  template:
+    spec:
+      selector:
+        istio: ingressgateway
+      ports:
+      - name: web
+        protocol: TCP
+        port: 80
+        targetPort: 80

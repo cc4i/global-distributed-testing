@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: master-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: 5557
+      name: locust
+      protocol: TCP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: helloworld
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - master-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /locust
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: locust-master
+        port:
+          number: 8089
+  tcp:
+  - match:
+    - port: 5557
+    route:
+    - destination:
+        host: locust-master
+        port:
+          number: 5557
