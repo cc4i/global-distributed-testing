@@ -72,6 +72,7 @@ steps:
       sed -i 's/MASTER_HOST/'${endpoint}'/g' manifests/worker/kustomization.yaml
       cat manifests/worker/kustomization.yaml
       cp manifests/worker/kustomization.yaml /workspace
+      echo "Access => http://${endpoint}/"
 
 
   # Deploy workers into worker cluster
