@@ -32,6 +32,11 @@ do
     else
         echo "Provision a GKE Autopilot ${cluster} at ${loc}."
         provison_autopilot ${PROJECT_ID} ${cluster} ${loc}
+        if [ $? -ne 0 ]
+        then
+            echo "Failed to privion cluster => ${cluster}!!!"
+            exit 1
+        fi 
         # Rename context to cluster name.
         kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
         echo "..."
