@@ -1,8 +1,8 @@
-export PROJECT_ID=play-with-anthos-340801
+export PROJECT_ID=${PROJECT_ID}
 export PROJECT_NUM=`gcloud projects list --filter PROJECT_ID=${PROJECT_ID} --format json|jq ".[].projectNumber" -r`
 
 
-source ./provison.sh
+source ./provision.sh
 
 # 0.Create VPC with subnet in those regions:  us-west1/europe-west1/asia-east1/asia-southeast1
 # TODO: using fixed network right now?!
@@ -18,6 +18,7 @@ do
     # Rename conext 
     kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster}
 done
+exit 1
 # 1.1.Register cluster into fleet
 for loc in  ${zones[@]}
 do 
@@ -112,27 +113,6 @@ done
 # 1.4.Create Gateway from Config Server
 kubectl apply -f gateway.yaml -n boutique --context webx-us-west1-a
 kubectl apply -f httproute.yaml -n boutique --context webx-us-west1-a
-exit 1
-
-# 2. Create distributed load testing clusters
-regions=(us-west1 europe-west1 asia-east1 asia-southeast1)
-for loc in ${regions[@]}
-do 
-    cluster="testx-${loc}"
-    echo "Provision GKE autopilot ${cluster} at ${loc}"
-    provison_autopilot ${PROJECT_ID} ${cluster} ${loc}
-
-    # Rename conext 
-    kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster}
-done
-
-# 3.Create a triger for Cloud Build
-
-# 4.Create delivery pipeline for master
-# 5.Create delivery pipeline for worker
-
-# 6.Create Pub/Sub for deployment pipeline
-
 
 
 
