@@ -42,7 +42,7 @@ steps:
     - 'pipefail'
     - '-c'
     - |-
-      regions=`cat ./gke-config`
+      regions=`cat ./hack/gke-config`
       region=`${regions}|awk '{print $1}'`
       master_cluster="testx-${region}"
       gcloud container clusters get-credentials ${master_cluster} --region ${region} --project ${PROJECT_ID}
@@ -62,7 +62,7 @@ steps:
     - 'pipefail'
     - '-c'
     - |-
-      regions=`cat ./gke-config`
+      regions=`cat ./hack/gke-config`
       region=`${regions}|awk '{print $1}'`
       master_cluster="testx-${region}"
       cat manifests/master/kustomization.yaml
@@ -89,7 +89,7 @@ steps:
       cp /workspace/kustomization.yaml manifests/worker/kustomization.yaml
       cat manifests/worker/kustomization.yaml
       gcloud version
-      regions=`cat ./gke-config`
+      regions=`cat ./hack/gke-config`
       master_cluster="testx-`echo ${regions}|awk '{print $1}'`"
       echo "master_cluster => ${master_cluster}"
       for loc in ${regions[@]}
