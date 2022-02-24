@@ -10,7 +10,7 @@ then
     echo "Using defautl project id => ${PROJECT_ID} instead."
 
 fi  
-export PROJECT_NUM=`gcloud projects list --filter PROJECT_ID=${PROJECT_ID} --format json|jq ".[].projectNumber" -r`
+export PROJECT_NUM=`gcloud projects list --filter PROJECT_ID=${PROJECT_ID} --format "value(PROJECT_NUMBER)"`
 
 
 source ./provision.sh

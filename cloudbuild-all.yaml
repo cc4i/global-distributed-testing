@@ -106,6 +106,7 @@ steps:
         fi
       done
 
+timeout: 3600s
 substitutions:
     _MASTER_PIPELINE: gdt-app-master
     _WORKER_PIPELINE: gdt-app-worker
