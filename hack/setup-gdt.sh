@@ -23,7 +23,7 @@ for loc in ${regions[@]}
 do 
     cluster="testx-${loc}"
     echo "Check cluster => ${cluster}"
-    status=`gcloud container clusters describe ${cluster} --project ${PROJECT_ID} --region ${loc} --format json|jq ".status" -r`
+    status=`gcloud container clusters describe ${cluster} --project ${PROJECT_ID} --region ${loc} --format "value(status)"`
     if [ "${status}" == "RUNNING" ]
     then
         echo "GKE Autopilot => ${cluster} is up and runing."
@@ -32,7 +32,6 @@ do
     else
         echo "Provision a GKE Autopilot ${cluster} at ${loc}."
         provison_autopilot ${PROJECT_ID} ${cluster} ${loc}
-
         # Rename context to cluster name.
         kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
         echo "..."
