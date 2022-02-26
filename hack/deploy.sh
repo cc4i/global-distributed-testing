@@ -11,6 +11,9 @@ then
 
 fi 
 
+where kubectl 
+echo $PATH
+
 regions=`cat ./gke-config`
 region=`echo ${regions}|awk '{print $1}'`
 master_cluster="testx-${region}"

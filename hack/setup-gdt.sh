@@ -29,7 +29,10 @@ do
         echo "GKE Autopilot => ${cluster} is up and runing."
         gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
         kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
-        kubectl get node --context ${cluster}
+        kubectl config get-contexts
+        kubectl get svc --context ${cluster}
+        which kubectl
+        echo $PATH
         cp ~/.kube/config /workspace/.
         echo "..."
 

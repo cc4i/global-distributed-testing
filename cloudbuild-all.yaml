@@ -42,17 +42,7 @@ steps:
     - 'pipefail'
     - '-c'
     - |-
-      regions=`cat ./hack/gke-config`
-      region=`echo ${regions}|awk '{print $1}'`
-      master_cluster="testx-${region}"
-      echo ""
-      echo "Retrieve credential from master clutser => ${master_cluster}"
-      echo "gcloud container clusters get-credentials ${master_cluster} --region ${region} --project ${PROJECT_ID}"
-      gcloud container clusters get-credentials ${master_cluster} --region ${region} --project ${PROJECT_ID}
-      echo ""
-      echo "Deploy manifests to master clutser => ${master_cluster}"
-      kubeclt create ns locust || true
-      kubectl kustomize build ./manifests/master | kubeclt apply -f -
+      cd hack && ./deploy.sh
 
   # Waiting & retrieve external IP
   - name: 'gcr.io/cloud-builders/gcloud'
