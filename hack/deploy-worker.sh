@@ -1,3 +1,6 @@
+# Pass neccensary argument here due to Cloud Build not to pass in.
+COMMIT_SHA=$1
+
 echo "Inside => ${PROJECT_ID}"
 export PROJECT_ID=${PROJECT_ID}
 if [ -z "${PROJECT_ID}" ]

@@ -108,7 +108,7 @@ steps:
       env
       echo ""
       
-      cd hack && ./deploy-worker.sh
+      cd hack && ./deploy-worker.sh ${COMMIT_SHA}
 
 timeout: 3600s
 substitutions:
