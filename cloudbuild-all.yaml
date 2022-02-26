@@ -31,7 +31,7 @@ steps:
 
 
   # Deploy master into master cluster
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:372.0.0'
     id: deploy-master
     waitFor:
     - check-infra
@@ -46,7 +46,7 @@ steps:
 
 
   # Waiting & retrieve external IP
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:372.0.0'
     id: retrieve-endpoint
     waitFor:
     - deploy-master

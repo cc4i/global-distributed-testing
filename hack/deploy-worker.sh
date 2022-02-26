@@ -3,7 +3,7 @@ export PROJECT_ID=${PROJECT_ID}
 cp /workspace/kustomization.yaml manifests/worker/kustomization.yaml
 cat manifests/worker/kustomization.yaml
 gcloud version
-regions=`cat ./hack/gke-config`
+regions=`cat ./gke-config`
 master_cluster="testx-`echo ${regions}|awk '{print $1}'`"
 echo "master_cluster => ${master_cluster}"
 

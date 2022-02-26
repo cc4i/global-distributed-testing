@@ -1,7 +1,7 @@
 export PROJECT_ID=${PROJECT_ID}
 
 regions=`cat ./gke-config`
-region=`${regions}|awk '{print $1}'`
+region=`echo ${regions}|awk '{print $1}'`
 master_cluster="testx-${region}"
 
 echo ""
