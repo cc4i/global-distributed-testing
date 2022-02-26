@@ -98,6 +98,10 @@ steps:
     - 'pipefail'
     - '-c'
     - |-
+      echo "Outside => ${PROJECT_ID}"
+      env
+      echo ""
+      
       cd hack && ./deploy-worker.sh
 
 timeout: 3600s
