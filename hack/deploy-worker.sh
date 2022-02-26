@@ -1,6 +1,7 @@
 # Pass neccensary argument here due to Cloud Build not to pass in.
 COMMIT_SHA=$1
 
+# Retrieve PROJECT_ID
 echo "Inside => ${PROJECT_ID}"
 export PROJECT_ID=${PROJECT_ID}
 if [ -z "${PROJECT_ID}" ]
@@ -17,6 +18,7 @@ fi
 export PROJECT_NUM=`gcloud projects list --filter PROJECT_ID=${PROJECT_ID} --format "value(PROJECT_NUMBER)"`
 env
 
+# Prepare for deployment
 cp /workspace/kustomization.yaml ../manifests/worker/kustomization.yaml
 cat ../manifests/worker/kustomization.yaml
 gcloud version
@@ -24,6 +26,7 @@ regions=`cat ./gke-config`
 master_cluster="testx-`echo ${regions}|awk '{print $1}'`"
 echo "master_cluster => ${master_cluster}"
 
+# Deploy into clusters
 for loc in ${regions[@]}
 do
     cluster="testx-${loc}"
@@ -42,5 +45,32 @@ do
         echo "Deploying into ${cluster} ... ...done"
         echo ""
 
+    fi
+done
+
+# Clean up not reqiured clusters
+echo "Clear up clusters if there's any!?"
+existed_clusters=`gcloud container clusters list --format "value(NAME)"|grep "testx-"`
+
+required_clusters=()
+for loc in ${regions[@]}
+do
+    cluster="testx-${loc}"
+    required_clusters[${#required_clusters[@]}]=${cluster}
+done
+
+for ec in ${existed_clusters[@]}
+do
+    
+    # case ! "${existed_clusters[@]}" in  *"${cluster}-xxx"*) echo "not found ->${cluster}" ;; esac
+    if [[ ${required_clusters[@]} =~ ${ec} ]]
+    then
+        echo ""
+    else
+        echo "Not FOUND!!!"
+        region=`echo ${ec} |awk -F- '{print $2"-"$3}'`
+        echo "gcloud container clusters delete ${ec} --region ${region} --project ${PROJECT_ID} --async"
+        gcloud container clusters delete ${ec} --region ${region} --project ${PROJECT_ID} --async
+        echo "Delete cluster ${ec} async ..."
     fi
 done
