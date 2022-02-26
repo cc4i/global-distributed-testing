@@ -1,4 +1,5 @@
 # Pass neccensary argument here due to Cloud Build not to pass in.
+# Be careful, scripts here will be execute all, still keep running and not stop event if meet error!!! 
 COMMIT_SHA=$1
 
 # Retrieve PROJECT_ID
@@ -45,32 +46,5 @@ do
         echo "Deploying into ${cluster} ... ...done"
         echo ""
 
-    fi
-done
-
-# Clean up not reqiured clusters
-echo "Clear up clusters if there's any!?"
-existed_clusters=`gcloud container clusters list --format "value(NAME)"|grep "testx-"`
-
-required_clusters=()
-for loc in ${regions[@]}
-do
-    cluster="testx-${loc}"
-    required_clusters[${#required_clusters[@]}]=${cluster}
-done
-
-for ec in ${existed_clusters[@]}
-do
-    
-    # case ! "${existed_clusters[@]}" in  *"${cluster}-xxx"*) echo "not found ->${cluster}" ;; esac
-    if [[ ${required_clusters[@]} =~ ${ec} ]]
-    then
-        echo ""
-    else
-        echo "Not FOUND!!!"
-        region=`echo ${ec} |awk -F- '{print $2"-"$3}'`
-        echo "gcloud container clusters delete ${ec} --region ${region} --project ${PROJECT_ID} --async"
-        gcloud container clusters delete ${ec} --region ${region} --project ${PROJECT_ID} --async
-        echo "Delete cluster ${ec} async ..."
     fi
 done

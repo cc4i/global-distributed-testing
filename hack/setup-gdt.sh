@@ -1,3 +1,4 @@
+# 0.Get PROJECT_ID
 export PROJECT_ID=${PROJECT_ID}
 if [ -z "${PROJECT_ID}" ]
 then
@@ -12,7 +13,7 @@ then
 fi  
 export PROJECT_NUM=`gcloud projects list --filter PROJECT_ID=${PROJECT_ID} --format "value(PROJECT_NUMBER)"`
 
-
+# 1.Load functions
 source ./provision.sh
 
 # 2. Create distributed load testing clusters. Read config file, ignore if has existed
@@ -51,10 +52,30 @@ do
     
 done
 
-# 3.Create a triger for Cloud Build
+# 3.Clean up not reqiured clusters
+echo "Clear up clusters if there's any!?"
+existed_clusters=`gcloud container clusters list --format "value(NAME)"|grep "testx-"`
 
-# 4.Create delivery pipeline for master
-# 5.Create delivery pipeline for worker
+required_clusters=()
+for loc in ${regions[@]}
+do
+    cluster="testx-${loc}"
+    required_clusters[${#required_clusters[@]}]=${cluster}
+done
 
-# 6.Create Pub/Sub for deployment pipeline
+for ec in ${existed_clusters[@]}
+do
+    
+    # case ! "${existed_clusters[@]}" in  *"${cluster}-xxx"*) echo "not found ->${cluster}" ;; esac
+    if [[ ${required_clusters[@]} =~ ${ec} ]]
+    then
+        echo ""
+    else
+        echo "Not FOUND!!!"
+        region=`echo ${ec} |awk -F- '{print $2"-"$3}'`
+        echo "gcloud container clusters delete ${ec} --region ${region} --project ${PROJECT_ID} --async --quiet"
+        gcloud container clusters delete ${ec} --region ${region} --project ${PROJECT_ID} --async --quiet
+        echo "Delete cluster ${ec} async ..."
+    fi
+done
 
