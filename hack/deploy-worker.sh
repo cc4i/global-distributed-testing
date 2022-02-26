@@ -14,7 +14,7 @@ if [ ${master_cluster} != ${cluster} ]
     echo "Deploying into ${cluster} ... ..."
     gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
     kubeclt create ns locust || true
-    kustomize build manifests/worker/. | kubeclt apply -f -
+    kubectl kustomize manifests/worker/. | kubeclt apply -f -
     echo "Deploying into ${cluster} ... ...done"
     echo ""
 then
