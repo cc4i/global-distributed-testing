@@ -9,14 +9,15 @@ echo "master_cluster => ${master_cluster}"
 
 for loc in ${regions[@]}
 do
-cluster="testx-${loc}"
-if [ ${master_cluster} != ${cluster} ]
-    echo "Deploying into ${cluster} ... ..."
-    gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
-    kubectl create ns locust || true
-    kubectl kustomize ../manifests/worker | kubectl apply -f -
-    echo "Deploying into ${cluster} ... ...done"
-    echo ""
-then
-fi
+    cluster="testx-${loc}"
+    if [ ${master_cluster} != ${cluster} ]
+    then
+        echo "Deploying into ${cluster} ... ..."
+        gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
+        kubectl create ns locust || true
+        kubectl kustomize ../manifests/worker | kubectl apply -f -
+        echo "Deploying into ${cluster} ... ...done"
+        echo ""
+
+    fi
 done
