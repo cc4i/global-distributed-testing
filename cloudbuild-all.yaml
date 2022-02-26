@@ -50,7 +50,7 @@ steps:
       echo "Deploy manifests to master clutser => ${master_cluster}"
       export KUBECONFIG=/workspace/config
       kubectl config use-context ${master_cluster}
-      kubectl ${master_cluster} create ns locust || true
+      kubectl create ns locust || true
       kubectl kustomize build ./manifests/master | kubectl apply -f -
 
 
