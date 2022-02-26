@@ -45,6 +45,7 @@ steps:
       regions=`cat ./hack/gke-config`
       region=`${regions}|awk '{print $1}'`
       master_cluster="testx-${region}"
+      echo "gcloud container clusters get-credentials ${master_cluster} --region ${region} --project ${PROJECT_ID}"
       gcloud container clusters get-credentials ${master_cluster} --region ${region} --project ${PROJECT_ID}
       kubeclt create ns locust || true
       kustomize build manifests/master/. | kubeclt apply -f -
