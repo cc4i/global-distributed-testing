@@ -22,4 +22,4 @@ gcloud container clusters get-credentials ${master_cluster} --region ${region} -
 
 echo "Deploy manifests to master clutser => ${master_cluster}"
 kubeclt create ns locust || true
-kubectl kustomize build manifests/master | kubeclt apply -f -
+kubectl kustomize build ../manifests/master | kubeclt apply -f -
