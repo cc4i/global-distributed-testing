@@ -27,6 +27,10 @@ do
     if [ "${status}" == "RUNNING" ]
     then
         echo "GKE Autopilot => ${cluster} is up and runing."
+        gcloud container clusters get-credentials ${cluster} --region ${region} --project ${PROJECT_ID}
+        kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
+        kubectl get node --context ${cluster}
+        cp ~/.kube/config /workspace/.
         echo "..."
 
     else
