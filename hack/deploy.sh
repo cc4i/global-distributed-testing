@@ -11,8 +11,8 @@ then
 
 fi 
 
-where kubectl 
-echo $PATH
+which kubectl 
+echo "PATH 2 => ${PATH}"
 
 regions=`cat ./gke-config`
 region=`echo ${regions}|awk '{print $1}'`
@@ -24,5 +24,5 @@ echo "gcloud container clusters get-credentials ${master_cluster} --region ${reg
 gcloud container clusters get-credentials ${master_cluster} --region ${region} --project ${PROJECT_ID}
 
 echo "Deploy manifests to master clutser => ${master_cluster}"
-kubeclt create ns locust || true
-kubectl kustomize build ../manifests/master | kubeclt apply -f -
+kubectl create ns locust || true
+kubectl kustomize build ../manifests/master | kubectl apply -f -
