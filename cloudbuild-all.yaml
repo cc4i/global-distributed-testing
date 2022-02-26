@@ -31,7 +31,7 @@ steps:
 
 
   # Deploy master into master cluster
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     id: deploy-master
     waitFor:
     - check-infra
@@ -55,7 +55,7 @@ steps:
       kubectl kustomize build ./manifests/master | kubeclt apply -f -
 
   # Waiting & retrieve external IP
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     id: retrieve-endpoint
     waitFor:
     - deploy-master
@@ -69,7 +69,7 @@ steps:
 
 
   # Deploy workers into worker cluster
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     id: deploy-worker
     waitFor:
