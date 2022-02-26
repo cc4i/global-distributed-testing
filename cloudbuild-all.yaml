@@ -51,7 +51,8 @@ steps:
       export KUBECONFIG=/workspace/config
       kubectl config use-context ${master_cluster}
       kubectl create ns locust || true
-      kubectl kustomize build ./manifests/master | kubectl apply -f -
+      kubectl kustomize ./manifests/master | kubectl apply -f -
+      kustomize version || true
 
 
   # Waiting & retrieve external IP
@@ -81,6 +82,7 @@ steps:
       cat ./manifests/worker/kustomization.yaml
       cp ./manifests/worker/kustomization.yaml /workspace
       echo "Access => http://${endpoint}/"
+
 
 
   # Deploy workers into worker cluster
