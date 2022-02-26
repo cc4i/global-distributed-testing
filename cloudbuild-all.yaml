@@ -51,7 +51,13 @@ steps:
       export KUBECONFIG=/workspace/config
       kubectl config use-context ${master_cluster}
       kubectl create ns locust || true
-      kubectl kustomize ./manifests/master | kubectl apply -f -
+
+      cd manifests/master
+      echo "image=locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}"
+      kustomize edit set image locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}
+      kustomize build | kubectl apply -f -
+
+      echo ""
       kustomize version || true
       which kustomize
       ls -l /builder/google-cloud-sdk/bin

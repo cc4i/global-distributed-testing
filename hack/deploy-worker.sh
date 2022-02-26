@@ -29,7 +29,13 @@ do
         echo "Deploying into ${cluster} ... ..."
         gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
         kubectl create ns locust || true
-        kubectl kustomize ../manifests/worker | kubectl apply -f -
+
+        echo ""
+        cd ../manifests/worker
+        echo "image=locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}"
+        kustomize edit set image locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}
+        kustomize build | kubectl apply -f -
+
         echo "Deploying into ${cluster} ... ...done"
         echo ""
 
