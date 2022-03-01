@@ -34,7 +34,6 @@ do
         kubectl get svc --context ${cluster}
         which kubectl
         echo $PATH
-        cp ~/.kube/config /workspace/.
         echo "..."
 
     else
@@ -48,9 +47,10 @@ do
         # Rename context to cluster name.
         kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
         echo "..."
-    fi
-    
+    fi 
 done
+# Save kubernetes config and share with following steps.
+cp ~/.kube/config /workspace/.
 
 # 3.Clean up not reqiured clusters
 echo "Clear up clusters if there's any!?"
