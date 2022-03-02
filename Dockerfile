@@ -6,5 +6,5 @@ RUN pip install -r /tasks/requirements.txt
 RUN chmod 755 /tasks/run.sh
 
 EXPOSE 8089 5557
-ENTRYPOINT ["/tasks/run.sh"]
+ENTRYPOINT ["/tasks/run.sh locustfile-cpu.py"]
 

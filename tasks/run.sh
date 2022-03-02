@@ -1,7 +1,8 @@
 #!/bin/bash
 
+LOCUSTFILE=$1
 LOCUST="locust"
-LOCUS_OPTS="-f /tasks/locustfile.py --enable-rebalancing --equal-weights"
+LOCUS_OPTS="-f /tasks/${LOCUSTFILE} --enable-rebalancing --equal-weights"
 LOCUST_MODE=${LOCUST_MODE:-standalone}
 
 if [[ "$LOCUST_MODE" = "master" ]]; then
