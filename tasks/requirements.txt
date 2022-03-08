@@ -12,3 +12,4 @@ Flask-Cors>=3.0.10
 roundrobin>=0.0.2
 typing-extensions>=3.7.4.3
 locust==2.7.3
+google-auth==2.6.0
