@@ -4,10 +4,7 @@ from locust import FastHttpUser, task, between
 import google.auth
 import google.auth.transport.requests
 
-
 creds, project = google.auth.default()
-
-
 
 class EmulatedUser(FastHttpUser):
     wait_time = between(0.5, 5)
@@ -17,10 +14,8 @@ class EmulatedUser(FastHttpUser):
     auth_req = google.auth.transport.requests.Request()
     creds.refresh(auth_req)
     # Now you can use creds.token
-
     def __init__(self, environment):
-        super().__init__(environment)
-        print("creds.token -> {}".format(creds.token))
+        print(creds.token)
 
     @task
     def test_view_index(self):
