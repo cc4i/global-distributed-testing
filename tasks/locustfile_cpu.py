@@ -25,3 +25,8 @@ class EmulatedUser(HttpUser):
         bearer = "Bearer {}".format(self.id_token)
         respone = self.client.get(url="/bite/10", headers={"Authorization": bearer})
         print(respone)
+
+    @task(80)
+    def test_write2bt(self):
+        bearer = "Bearer {}".format(self.id_token)
+        respone = self.client.post(url="/write2bt", headers={"Authorization": bearer})
