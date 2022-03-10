@@ -28,36 +28,52 @@ do
     if [ "${status}" == "RUNNING" ]
     then
         echo "GKE Autopilot => ${cluster} is up and runing."
-        gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
-        kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
-        kubectl config get-contexts
-        kubectl get svc --context ${cluster}
-        which kubectl
-        echo $PATH
         echo "..."
 
     else
-        echo "Provision a GKE Autopilot ${cluster} at ${loc}."
+        echo "Provisioning a GKE Autopilot ${cluster} at ${loc} /ASYNC."
         provison_autopilot ${PROJECT_ID} ${cluster} ${loc}
         if [ $? -ne 0 ]
         then
             echo "Failed to privion cluster => ${cluster}!!!"
             exit 1
-        fi 
-        # Rename context to cluster name.
-        kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
+        fi
         echo "..."
     fi 
 done
+
+# 3. Retrieve credentials
+for loc in ${regions[@]}
+do 
+    cluster="testx-${loc}"
+    status=`gcloud container clusters describe ${cluster} --project ${PROJECT_ID} --region ${loc} --format "value(status)" || true`
+    while [ "${status}" != "RUNNING" ]
+    do
+        echo "${cluster} is still ${status}"
+        sleep 10
+        status=`gcloud container clusters describe ${cluster} --project ${PROJECT_ID} --region ${loc} --format "value(status)" || true`
+    done
+    echo "Retrieve credentials from ${cluster} at ${loc}."
+    gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
+    # Rename context to cluster name.
+    kubectl config rename-context gke_${PROJECT_ID}_${loc}_${cluster} ${cluster} || true
+    kubectl config get-contexts
+    kubectl get svc --context ${cluster}
+    which kubectl
+    echo $PATH
+    echo "..."
+done
+
+
 # Save kubernetes config and share with following steps.
 cp ~/.kube/config /workspace/.
 
-# 3.Add policy binding with [locust/default]
+# 4.Add policy binding with [locust/default]
 gcloud iam service-accounts add-iam-policy-binding locust-test@play-with-anthos-340801.iam.gserviceaccount.com \
     --role roles/iam.workloadIdentityUser \
     --member "serviceAccount:play-with-anthos-340801.svc.id.goog[locust/default]"
 
-# 4.Clean up not reqiured clusters
+# 5.Clean up not reqiured clusters
 echo "Clear up clusters if there's any!?"
 existed_clusters=`gcloud container clusters list --format "value(NAME)"|grep "testx-"`
 

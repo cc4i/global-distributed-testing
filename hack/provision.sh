@@ -12,7 +12,8 @@ provison_autopilot() {
         --network "projects/${project_id}/global/networks/default" \
         --subnetwork "projects/${project_id}/regions/${region}/subnetworks/default" \
         --cluster-ipv4-cidr "/17" \
-        --services-ipv4-cidr "/22"
+        --services-ipv4-cidr "/22" \
+        --async
 
 }
 
