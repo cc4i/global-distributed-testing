@@ -52,7 +52,12 @@ done
 # Save kubernetes config and share with following steps.
 cp ~/.kube/config /workspace/.
 
-# 3.Clean up not reqiured clusters
+# 3.Add policy binding with [locust/default]
+gcloud iam service-accounts add-iam-policy-binding locust-test@play-with-anthos-340801.iam.gserviceaccount.com \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:play-with-anthos-340801.svc.id.goog[locust/default]"
+
+# 4.Clean up not reqiured clusters
 echo "Clear up clusters if there's any!?"
 existed_clusters=`gcloud container clusters list --format "value(NAME)"|grep "testx-"`
 

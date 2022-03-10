@@ -51,6 +51,9 @@ steps:
       export KUBECONFIG=/workspace/config
       kubectl config use-context ${master_cluster}
       kubectl create ns locust || true
+      kubectl annotate serviceaccount default \
+        --namespace locust \
+        iam.gke.io/gcp-service-account=locust-test@play-with-anthos-340801.iam.gserviceaccount.com || true
 
       cd manifests/master
       echo "image=locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}"
