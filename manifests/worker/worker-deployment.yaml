@@ -5,7 +5,7 @@ metadata:
   labels:
     name: locust-worker
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: locust-worker
@@ -20,8 +20,8 @@ spec:
           imagePullPolicy: Always
           resources:
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 500m
+              memory: 512Mi
             requests:
               cpu: 500m
               memory: 512Mi
@@ -33,3 +33,36 @@ spec:
                 configMapKeyRef:
                   name: locust-config
                   key: master_host
+
+---
+# Optional: PodDisruptionBudget will instruct Kubernetes to ensure at least 1 replica
+# is available when possible
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: locust-worker-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: locust-worker
+
+---
+# Optional: HorizontalPodAutoscaler will automatically scale the gateway replica count based on
+# CPU utilization
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: locust-worker-hpa
+spec:
+  maxReplicas: 10
+  metrics:
+  - resource:
+      name: cpu
+      targetAverageUtilization: 60
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: locust-worker
