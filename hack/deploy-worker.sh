@@ -28,6 +28,8 @@ master_cluster="testx-`echo ${regions}|awk '{print $1}'`"
 echo "master_cluster => ${master_cluster}"
 
 # Deploy into clusters
+cd ../manifests/worker
+echo `pwd`
 for loc in ${regions[@]}
 do
     cluster="testx-${loc}"
@@ -42,7 +44,6 @@ do
 
 
         echo ""
-        cd ../manifests/worker
         echo "image=locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}"
         kustomize edit set image locust-tasks=us-docker.pkg.dev/${PROJECT_ID}/gdt-repo/locust-tasks:${COMMIT_SHA}
         kustomize build | kubectl apply -f -
