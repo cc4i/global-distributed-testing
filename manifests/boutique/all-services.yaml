@@ -275,33 +275,7 @@ spec:
             limits:
               cpu: 500m
               memory: 128Mi
----
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: frontend-pdb
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      app: frontend
----
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: frontend-hpa
-spec:
-  maxReplicas: 8
-  metrics:
-  - resource:
-      name: cpu
-      targetAverageUtilization: 80
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: frontend
+
 ---
 apiVersion: v1
 kind: Service

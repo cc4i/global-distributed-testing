@@ -1,0 +1,110 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: frontend
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-hpa
+spec:
+  maxReplicas: 20
+  metrics:
+  - resource:
+      name: cpu
+      targetAverageUtilization: 70
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: cart-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: cartservice
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cart-hpa
+spec:
+  maxReplicas: 20
+  metrics:
+  - resource:
+      name: cpu
+      targetAverageUtilization: 70
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cartservice
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: product-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: productcatalogservice
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: product-hpa
+spec:
+  maxReplicas: 20
+  metrics:
+  - resource:
+      name: cpu
+      targetAverageUtilization: 70
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: productcatalogservice
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: currency-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: currencyservice
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: currency-hpa
+spec:
+  maxReplicas: 20
+  metrics:
+  - resource:
+      name: cpu
+      targetAverageUtilization: 70
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: currencyservice
