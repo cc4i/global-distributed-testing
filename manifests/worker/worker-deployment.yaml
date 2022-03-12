@@ -39,6 +39,11 @@ spec:
               host: $(LOCUST_MASTER)
             failureThreshold: 30
             periodSeconds: 10
+      nodeSelector:
+        cloud.google.com/gke-spot: "true"
+      terminationGracePeriodSeconds: 25
+
+
 ---
 # Optional: PodDisruptionBudget will instruct Kubernetes to ensure at least 1 replica
 # is available when possible
