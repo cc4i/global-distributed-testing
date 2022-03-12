@@ -33,7 +33,12 @@ spec:
                 configMapKeyRef:
                   name: locust-config
                   key: master_host
-
+          startupProbe:
+            tcpSocket:
+              port: 5557
+              host: $(LOCUST_MASTER)
+            failureThreshold: 30
+            periodSeconds: 10
 ---
 # Optional: PodDisruptionBudget will instruct Kubernetes to ensure at least 1 replica
 # is available when possible
