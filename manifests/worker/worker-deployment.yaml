@@ -33,12 +33,17 @@ spec:
                 configMapKeyRef:
                   name: locust-config
                   key: master_host
-          startupProbe:
-            tcpSocket:
-              port: 5557
-              host: $(LOCUST_MASTER)
-            failureThreshold: 30
-            periodSeconds: 10
+          # startupProbe:
+          #   tcpSocket:
+          #     port: 5557
+          #     host: $(LOCUST_MASTER)
+          #   failureThreshold: 30
+          #   periodSeconds: 10
+      initContainers:
+      - name: wait-master-ready
+        image: busybox:1.28
+        command: ['sh', '-c', "sleep 120"]
+
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       terminationGracePeriodSeconds: 25
