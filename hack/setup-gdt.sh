@@ -75,7 +75,7 @@ for loc in ${regions[@]}
 do
     cluster="testx-${loc}"
     kubectl get ns istio-system --context ${cluster}
-    if [ $? -ne 0]
+    if [ $? -ne 0 ]
     then
 
         asmcli install \
