@@ -64,22 +64,31 @@ do
     echo "..."
 done
 
-# 4. Install managed ASM
+4. Install managed ASM
 curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.12 > asmcli
 chmod +x asmcli
+mv asmcli /builder/google-cloud-sdk/bin/
+curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > jq
+chmod +x jq
+mv jq /builder/google-cloud-sdk/bin/
 for loc in ${regions[@]}
 do
     cluster="testx-${loc}"
-    ./asmcli install \
-        -p ${PROJECT_ID} \
-        -l ${loc} \
-        -n ${cluster} \
-        --managed \
-        --verbose \
-        --output_dir ${cluster} \
-        --use_managed_cni \
-        --channel rapid \
-        --enable-all
+    kubectl get ns istio-system --context ${cluster}
+    if [ $? -ne 0]
+    then
+
+        asmcli install \
+            -p ${PROJECT_ID} \
+            -l ${loc} \
+            -n ${cluster} \
+            --managed \
+            --verbose \
+            --output_dir ${cluster} \
+            --use_managed_cni \
+            --channel rapid \
+            --enable-all
+    fi
 done
 
 
