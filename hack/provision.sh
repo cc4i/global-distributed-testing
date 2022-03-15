@@ -8,7 +8,7 @@ provison_autopilot() {
 
     gcloud container --project "play-with-anthos-340801" clusters create-auto "${cluster}" \
         --region "${region}" \
-        --release-channel "regular" \
+        --release-channel "rapid" \
         --network "projects/${project_id}/global/networks/default" \
         --subnetwork "projects/${project_id}/regions/${region}/subnetworks/default" \
         --cluster-ipv4-cidr "/17" \

@@ -38,6 +38,11 @@ do
         echo "Deploying into ${cluster} ... ..."
         gcloud container clusters get-credentials ${cluster} --region ${loc} --project ${PROJECT_ID}
         kubectl create ns locust || true
+
+        rev=`kubectl get deploy -n istio-system -l app=istiod -o \
+            jsonpath={.items[*].metadata.labels.'istio\.io\/rev'}'{"\n"}'`
+        kubectl label namespace locust istio.io/rev=${rev} --overwrite || true
+
         kubectl annotate serviceaccount default \
             --namespace locust \
             iam.gke.io/gcp-service-account=locust-test@play-with-anthos-340801.iam.gserviceaccount.com || true
