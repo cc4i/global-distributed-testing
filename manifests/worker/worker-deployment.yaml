@@ -44,9 +44,9 @@ spec:
         image: busybox:1.28
         command: ['sh', '-c', "sleep 120"]
 
-      nodeSelector:
-        cloud.google.com/gke-spot: "true"
-      terminationGracePeriodSeconds: 25
+      # nodeSelector:
+      #   cloud.google.com/gke-spot: "true"
+      # terminationGracePeriodSeconds: 25
 
 
 ---

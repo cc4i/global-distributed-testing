@@ -1,0 +1,13 @@
+git config --get remote.origin.url
+
+git add -A 
+git commit -m "update cluster location" 
+
+git push 
+
+curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" -X POST https://bite-cpu-vig5qbg5jq-df.a.run.app/write2bt
+
+asia-east1 asia-east2 asia-northeast1 asia-northeast2 asia-northeast3 asia-south1 asia-south2 asia-southeast1 asia-southeast2 australia-southeast1 australia-southeast2
+
+
+cbt --instance my-bigtable -creds $(gcloud auth print-identity-token) ls 
