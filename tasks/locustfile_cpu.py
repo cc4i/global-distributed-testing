@@ -19,7 +19,7 @@ class EmulatedUser(HttpUser):
             self.auth_req = google.auth.transport.requests.Request()
             self.id_token = google.oauth2.id_token.fetch_id_token(self.auth_req, self.target_audience)
             logging.info("token -> {}".format(self.id_token))
-            self.client.headers.update({'Authorization': self.id_token})
+            self.client.headers.update({'Authorization': 'Bearer {}'.format(self.id_token)})
         except Exception as e:
             logging.error(e)
         logging.info(self.id_token)
