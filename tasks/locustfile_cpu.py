@@ -22,7 +22,6 @@ class EmulatedUser(HttpUser):
             self.client.headers.update({'Authorization': 'Bearer {}'.format(self.id_token)})
         except Exception as e:
             logging.error(e)
-        logging.info(self.id_token)
 
 
     # @task
