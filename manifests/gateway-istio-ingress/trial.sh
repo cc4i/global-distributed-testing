@@ -10,3 +10,10 @@ kubectl run --context=webx-us-west1-a -i --tty --rm loadgen  \
     -- /bin/sh -c 'httperf  \
     --server=34.102.157.139  \
     --hog --uri="/zone" --port 80  --wsess=100000,1,1 --rate 20'
+
+
+kubectl run --context=webx-us-west1-a -i --tty --rm gcloud  \
+    --image=gcr.io/cloud-builders/gcloud  \
+    --restart=Never  \
+    --command \
+    -- bash
