@@ -17,3 +17,5 @@ kubectl run --context=webx-us-west1-a -i --tty --rm gcloud  \
     --restart=Never  \
     --command \
     -- bash
+
+curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" 
