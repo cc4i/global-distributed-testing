@@ -14,7 +14,7 @@ class EmulatedUser(HttpUser):
 
     def on_start(self):
         # self.target_audience = self.client.base_url
-        self.target_audience = "run.app"
+        self.target_audience = "https://bite-cpu-2-vig5qbg5jq-df.a.run.app"
         self.url = self.client.base_url
         try:
             self.auth_req = google.auth.transport.requests.Request()
