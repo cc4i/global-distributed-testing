@@ -12,7 +12,7 @@ kubectl run --context=webx-us-west1-a -i --tty --rm loadgen  \
     --hog --uri="/zone" --port 80  --wsess=100000,1,1 --rate 20'
 
 
-kubectl run --context=webx-us-west1-a -i --tty --rm gcloud  \
+kubectl run --context=webx-us-west1-a -n locust -i --tty --rm gcloud  \
     --image=gcr.io/cloud-builders/gcloud  \
     --restart=Never  \
     --command \
