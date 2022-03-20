@@ -8,8 +8,6 @@ import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-#TODO - Think about refesh identity token if expired
-
 class EmulatedUser(HttpUser):
     wait_time = between(0.5, 5)
 
@@ -28,8 +26,17 @@ class EmulatedUser(HttpUser):
         except Exception as e:
             logging.error(e)
 
-    @task
+    @task(10)
     def test_bite_cpu(self):
         respone = self.client.get(url="/bite/10")
         logging.info(respone)
 
+    @task(100)
+    def test_write2bt(self):
+        try:
+            respone = self.client.post(url="/write2bt", data={"test": "data"})
+        except Exception as e:
+            logging.error(e)
+        logging.info("request header -> {}".format(self.client.headers))
+        logging.info("respone header -> {}".format(respone.headers))
+        logging.info("response body -> {}".format(respone.content))
