@@ -18,13 +18,10 @@ class EmulatedUser(HttpUser):
         self.url = self.client.base_url
         self.target_audience = self.url
         try:
-            creds, project = google.auth.default()
-            auth_req = google.auth.transport.requests.Request()
-            creds.refresh(auth_req)
-            # self.auth_req = google.auth.transport.requests.Request()
-            # self.id_token = google.oauth2.id_token.fetch_id_token(self.auth_req, self.target_audience)
-            logging.info("token -> {}".format(creds.id_token))
-            self.client.headers.update({'Authorization': 'Bearer {}'.format(creds.id_token)})
+            self.auth_req = google.auth.transport.requests.Request()
+            self.id_token = google.oauth2.id_token.fetch_id_token(self.auth_req, self.target_audience)
+            logging.info("token -> {}".format(self.id_token))
+            self.client.headers.update({'Authorization': 'Bearer {}'.format(self.id_token)})
         except Exception as e:
             logging.error(e)
 
