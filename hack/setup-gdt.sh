@@ -64,7 +64,16 @@ do
     echo "..."
 done
 
-4. Install managed ASM
+
+# 4. Update maintaince window
+for loc in ${regions[@]}
+do 
+    cluster="testx-${loc}"
+    update_maintainance_window ${PROJECT_ID} ${cluster} ${loc}
+    echo "..."
+done
+
+# 4. Install managed ASM
 curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.12 > asmcli
 chmod +x asmcli
 mv asmcli /builder/google-cloud-sdk/bin/

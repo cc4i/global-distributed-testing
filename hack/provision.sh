@@ -6,13 +6,24 @@ provison_autopilot() {
     cluster=$2
     region=$3
 
-    gcloud container --project "play-with-anthos-340801" clusters create-auto "${cluster}" \
+    gcloud container --project "${project_id}" clusters create-auto "${cluster}" \
         --region "${region}" \
         --release-channel "rapid" \
         --network "projects/${project_id}/global/networks/default" \
         --subnetwork "projects/${project_id}/regions/${region}/subnetworks/default" \
         --cluster-ipv4-cidr "/17" \
         --services-ipv4-cidr "/22" \
+        --async
+
+}
+
+update_maintainance_window() {
+    project_id=$1
+    cluster=$2
+    region=$3
+
+    gcloud container --project "${project_id}" clusters update "${cluster}" \
+        --region "${region}" \
         --maintenance-window-start "2022-03-20T16:00:00Z" --maintenance-window-end "2022-03-21T16:00:00Z" \
         --maintenance-window-recurrence "FREQ=WEEKLY;BYDAY=SA,SU" \
         --async
