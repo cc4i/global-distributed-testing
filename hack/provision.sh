@@ -13,6 +13,8 @@ provison_autopilot() {
         --subnetwork "projects/${project_id}/regions/${region}/subnetworks/default" \
         --cluster-ipv4-cidr "/17" \
         --services-ipv4-cidr "/22" \
+        --maintenance-window-start "2022-03-20T16:00:00Z" --maintenance-window-end "2022-03-21T16:00:00Z" \
+        --maintenance-window-recurrence "FREQ=WEEKLY;BYDAY=SA,SU" \
         --async
 
 }
