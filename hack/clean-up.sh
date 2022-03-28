@@ -34,5 +34,6 @@ do
     gcloud container clusters delete ${cluster} \
         --project=${PROJECT_ID} \
         --region=${loc} \
+        --quiet \
         --async || true
 done
