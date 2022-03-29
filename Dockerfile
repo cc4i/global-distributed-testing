@@ -7,5 +7,5 @@ RUN chmod 755 /tasks/run.sh
 
 
 EXPOSE 8089 5557
-ENTRYPOINT ["/tasks/run.sh", "locustfile_write2bt_lb.py"]
+ENTRYPOINT ["/tasks/run.sh", "locustfile.py"]
 
